@@ -9,6 +9,7 @@ import {
   FORCE_RE_RENDER,
   GLOBALS_UPDATED,
   IGNORED_EXCEPTION,
+  PLAY_FUNCTION_THREW_EXCEPTION,
   PREVIEW_KEYDOWN,
   RESET_STORY_ARGS,
   SET_CURRENT_STORY,
@@ -79,7 +80,7 @@ jest.mock('@storybook/client-logger');
 jest.mock('react-dom');
 
 const serializeError = (error: Error) => {
-  const { name, message, stack } = error;
+  const { name = 'Error', message = String(error), stack } = error;
   return { name, message, stack };
 };
 
@@ -520,7 +521,10 @@ describe('PreviewWeb', () => {
         document.location.search = '?id=component-one--a';
         const preview = await createAndRenderPreview();
 
-        expect(mockChannel.emit).toHaveBeenCalledWith(STORY_THREW_EXCEPTION, serializeError(error));
+        expect(mockChannel.emit).toHaveBeenCalledWith(
+          PLAY_FUNCTION_THREW_EXCEPTION,
+          serializeError(error)
+        );
         expect(preview.view.showErrorDisplay).not.toHaveBeenCalled();
       });
 

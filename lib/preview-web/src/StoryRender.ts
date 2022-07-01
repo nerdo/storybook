@@ -18,7 +18,6 @@ import { Channel } from '@storybook/addons';
 import {
   STORY_RENDER_PHASE_CHANGED,
   STORY_RENDERED,
-  STORY_THREW_EXCEPTION,
   PLAY_FUNCTION_THREW_EXCEPTION,
 } from '@storybook/core-events';
 
@@ -214,9 +213,10 @@ export class StoryRender<TFramework extends AnyFramework> implements Render<TFra
         this.teardownRender = teardown || (() => {});
       });
       this.notYetRendered = false;
-      if (abortSignal.aborted || this.phase !== 'rendering') return;
+      if (abortSignal.aborted) return;
 
-      if (forceRemount && playFunction) {
+      // The phase should be 'rendering' but it might be set to 'aborted' by another render cycle
+      if (forceRemount && playFunction && this.phase !== 'errored') {
         this.disableKeyListeners = true;
         try {
           await this.runPhase(abortSignal, 'playing', async () => {
