@@ -78,7 +78,8 @@ export const mockChannel = {
 
 export const waitForEvents = (
   events: string[],
-  predicate: (...args: any[]) => boolean = () => true
+  predicate: (...args: any[]) => boolean = () => true,
+  debugLabel?: string
 ) => {
   // We've already emitted a render event. NOTE if you want to test a second call,
   // ensure you call `mockChannel.emit.mockClear()` before `waitFor...`
@@ -99,7 +100,9 @@ export const waitForEvents = (
     events.forEach((event) => mockChannel.on(event, listener));
 
     // Don't wait too long
-    waitForQuiescence().then(() => reject(new Error('Event was not emitted in time')));
+    waitForQuiescence().then(() =>
+      reject(new Error(`Event was not emitted in time: ${debugLabel || events}`))
+    );
   });
 };
 
@@ -114,8 +117,10 @@ export const waitForRender = () =>
     STORY_MISSING,
   ]);
 
-export const waitForRenderPhase = (phase: RenderPhase) =>
-  waitForEvents([STORY_RENDER_PHASE_CHANGED], ({ newPhase }) => newPhase === phase);
+export const waitForRenderPhase = (phase: RenderPhase) => {
+  const label = `${STORY_RENDER_PHASE_CHANGED} to ${phase}`;
+  return waitForEvents([STORY_RENDER_PHASE_CHANGED], ({ newPhase }) => newPhase === phase, label);
+};
 
 // A little trick to ensure that we always call the real `setTimeout` even when timers are mocked
 const realSetTimeout = setTimeout;
