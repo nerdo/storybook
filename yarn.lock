@@ -8184,6 +8184,7 @@ __metadata:
     babel-plugin-polyfill-corejs3: ^0.1.0
     chalk: ^4.1.0
     core-js: ^3.8.2
+    esbuild-register: ^3.3.3
     express: ^4.17.1
     file-system-cache: ^1.0.5
     find-up: ^5.0.0
@@ -21187,6 +21188,15 @@ __metadata:
   version: 0.14.39
   resolution: "esbuild-openbsd-64@npm:0.14.39"
   conditions: os=openbsd & cpu=x64
+  languageName: node
+  linkType: hard
+
+"esbuild-register@npm:^3.3.3":
+  version: 3.3.3
+  resolution: "esbuild-register@npm:3.3.3"
+  peerDependencies:
+    esbuild: ">=0.12 <1"
+  checksum: b99e094646e6de94afafd201794e5d2e0250377cabd544cc3d7da5ccf879f38174e26a6530ecd1fa20494842f4af50360769510dbcf57ff1ce4ba6d0e84ae273
   languageName: node
   linkType: hard
 

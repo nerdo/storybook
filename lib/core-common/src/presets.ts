@@ -10,6 +10,7 @@ import {
 } from './types';
 import { loadCustomPresets } from './utils/load-custom-presets';
 import { safeResolve, safeResolveFrom } from './utils/safeResolve';
+import { interopRequireDefault } from './utils/interpret-require';
 
 const isObject = (val: unknown): val is Record<string, any> =>
   val != null && typeof val === 'object' && Array.isArray(val) === false;
@@ -152,15 +153,6 @@ const map =
     }
     return undefined;
   };
-
-async function interopRequireDefault(filePath: string) {
-  const result = await import(filePath);
-
-  const isES6DefaultExported =
-    typeof result === 'object' && result !== null && typeof result.default !== 'undefined';
-
-  return isES6DefaultExported ? result.default : result;
-}
 
 async function getContent(input: any) {
   if (input.type === 'virtual') {
