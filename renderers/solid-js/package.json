@@ -49,19 +49,16 @@
     "prepare": "esrun ../../scripts/prepare/bundle.ts"
   },
   "dependencies": {
-    "@storybook/addons": "7.0.0-alpha.8",
-    "@storybook/core-client": "7.0.0-alpha.8",
+    "@storybook/addons": "7.0.0-alpha.10",
+    "@storybook/core-client": "7.0.0-alpha.10",
     "@storybook/csf": "0.0.2--canary.4566f4d.1",
-    "@storybook/store": "7.0.0-alpha.8",
+    "@storybook/store": "7.0.0-alpha.10",
     "core-js": "^3.8.2",
     "global": "^4.4.0",
-    "react": "16.14.0",
-    "react-dom": "16.14.0",
     "ts-dedent": "^2.0.0"
   },
   "devDependencies": {
     "@digitak/esrun": "^3.2.2",
-    "babel-preset-solid": "^1.4.5",
     "solid-js": "^1.4.5"
   },
   "peerDependencies": {
