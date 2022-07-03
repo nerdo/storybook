@@ -250,6 +250,13 @@ export const sfcVue: Parameters = {
   generator: fromDeps('vue@2.6', 'vue-loader@15.9', 'vue-template-compiler@2.6', 'webpack'),
 };
 
+export const solidJs: Parameters = {
+  renderer: 'solid-js',
+  name: 'solidJs',
+  version: 'latest',
+  generator: 'npx degit nerdo/solid-js-templates/ts-webpack {{appName}}',
+};
+
 export const svelte: Parameters = {
   renderer: 'svelte',
   name: 'svelte',
