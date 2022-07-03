@@ -22,6 +22,7 @@ import htmlGenerator from './generators/HTML';
 import webComponentsGenerator from './generators/WEB-COMPONENTS';
 import riotGenerator from './generators/RIOT';
 import preactGenerator from './generators/PREACT';
+import solidJsGenerator from './generators/SOLID-JS';
 import svelteGenerator from './generators/SVELTE';
 import raxGenerator from './generators/RAX';
 import serverGenerator from './generators/SERVER';
@@ -160,6 +161,11 @@ const installStorybook = (
       case ProjectType.PREACT:
         return preactGenerator(packageManager, npmOptions, generatorOptions).then(
           commandLog('Adding Storybook support to your "Preact" app\n')
+        );
+
+      case ProjectType.SOLID_JS:
+        return solidJsGenerator(packageManager, npmOptions, generatorOptions).then(
+          commandLog('Adding Storybook support to your "SolidJS" app\n')
         );
 
       case ProjectType.SVELTE:

@@ -23,6 +23,7 @@ export type SupportedRenderers =
   | 'marionette'
   | 'marko'
   | 'preact'
+  | 'solid-js'
   | 'svelte'
   | 'rax'
   | 'aurelia'
@@ -42,6 +43,7 @@ export const SUPPORTED_RENDERERS: SupportedRenderers[] = [
   'marionette',
   'marko',
   'preact',
+  'solid-js',
   'svelte',
   'rax',
   'aurelia',
@@ -68,6 +70,7 @@ export enum ProjectType {
   HTML = 'HTML',
   RIOT = 'RIOT',
   PREACT = 'PREACT',
+  SOLID_JS = 'SOLID_JS',
   SVELTE = 'SVELTE',
   RAX = 'RAX',
   AURELIA = 'AURELIA',
@@ -231,6 +234,13 @@ export const supportedTemplates: TemplateConfiguration[] = [
   {
     preset: ProjectType.PREACT,
     dependencies: ['preact'],
+    matcherFunction: ({ dependencies }) => {
+      return dependencies.every(Boolean);
+    },
+  },
+  {
+    preset: ProjectType.SOLID_JS,
+    dependencies: ['solid-js'],
     matcherFunction: ({ dependencies }) => {
       return dependencies.every(Boolean);
     },

@@ -97,7 +97,7 @@ const getFrameworkDetails = (
 const stripVersions = (addons: string[]) => addons.map((addon) => getPackageDetails(addon)[0]);
 
 const hasInteractiveStories = (framework: SupportedRenderers) =>
-  ['react', 'angular', 'preact', 'svelte', 'vue', 'vue3', 'html'].includes(framework);
+  ['react', 'angular', 'preact', 'solid-js', 'svelte', 'vue', 'vue3', 'html'].includes(framework);
 
 export async function baseGenerator(
   packageManager: JsPackageManager,
