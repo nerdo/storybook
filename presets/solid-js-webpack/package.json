@@ -57,7 +57,6 @@
   },
   "devDependencies": {
     "@digitak/esrun": "^3.2.2",
-    "babel-preset-solid": "^1.4.5",
     "solid-js": "^1.4.5"
   },
   "peerDependencies": {

@@ -6,11 +6,6 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js"
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "src/**/*.test.*",
-    "src/**/__testfixtures__/**"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.test.*", "src/**/__testfixtures__/**"]
 }
