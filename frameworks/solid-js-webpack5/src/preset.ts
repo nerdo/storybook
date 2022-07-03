@@ -3,8 +3,7 @@ import type { PresetProperty } from '@storybook/core-common';
 import type { StorybookConfig } from './types';
 
 export const addons: PresetProperty<'addons', StorybookConfig> = [
-  path.dirname(require.resolve(path.join('@storybook/preset-react-webpack', 'package.json'))),
-  path.dirname(require.resolve(path.join('@storybook/react', 'package.json'))),
+  path.dirname(require.resolve(path.join('@storybook/solid-js', 'package.json'))),
 ];
 
 export const core: PresetProperty<'core', StorybookConfig> = async (config, options) => {
@@ -19,18 +18,4 @@ export const core: PresetProperty<'core', StorybookConfig> = async (config, opti
       options: typeof framework === 'string' ? {} : framework.options.builder || {},
     },
   };
-};
-
-export const webpack: StorybookConfig['webpack'] = async (config) => {
-  // eslint-disable-next-line no-param-reassign
-  config.resolve = config.resolve || {};
-
-  // eslint-disable-next-line no-param-reassign
-  config.resolve.alias = {
-    ...config.resolve?.alias,
-    '@storybook/react': path.dirname(
-      require.resolve(path.join('@storybook/react', 'package.json'))
-    ),
-  };
-  return config;
 };
