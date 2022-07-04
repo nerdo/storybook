@@ -1,5 +1,4 @@
 import { render as renderSolidJS } from 'solid-js/web';
-import { createStore, Store } from 'solid-js/store';
 import _h from 'solid-js/h';
 import type { RenderContext } from '@storybook/store';
 import { Args, ArgsStoryFn } from '@storybook/csf';
@@ -12,11 +11,11 @@ type Accessors<Type> = {
   [P in keyof Type]: Accessor<Type[P]>;
 };
 
-type Setters<Type> = {
-  [P in keyof Type as `set${Capitalize<string & P>}`]: Setter<Type[P]>;
-};
+// type Setters<Type> = {
+//   [P in keyof Type as `set${Capitalize<string & P>}`]: Setter<Type[P]>;
+// };
 
-type Signals<T> = Accessors<T> & Setters<T>;
+// type Signals<T> = Accessors<T> & Setters<T>;
 
 interface SignalCache<T> {
   getters: Accessors<ValueOf<T>>;
@@ -26,6 +25,7 @@ interface SignalCache<T> {
 const componentSignalCache: Record<string, SignalCache<Args> | undefined> = {};
 
 const ucFirst = (s: string) => `${(s[0] || '').toUpperCase()}${s.substring(1)}`;
+
 const setterName = (s: string) => `set${ucFirst(s)}`;
 
 const createArgSignalCache = (args: Args) =>
@@ -76,7 +76,7 @@ export const render: ArgsStoryFn<SolidFramework> = (args, context) => {
   // Arg changes are passed to signal setters to trigger reactivity.
   const cached = getSignalCache(context.id, args);
 
-  return <Component {...cached.getters} {...cached.setters} />;
+  return <Component {...cached.getters} />;
 };
 
 export function renderToDOM(
