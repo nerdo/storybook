@@ -1,8 +1,9 @@
+import type { RenderContext } from '@storybook/store';
+import type { Accessor, Setter } from 'solid-js';
+import type { Args, ArgsStoryFn } from '@storybook/csf';
+import { Show, batch, createSignal } from 'solid-js';
 import { render as renderSolidJS } from 'solid-js/web';
 import _h from 'solid-js/h';
-import type { RenderContext } from '@storybook/store';
-import { Args, ArgsStoryFn } from '@storybook/csf';
-import { Accessor, Setter, batch, createSignal } from 'solid-js';
 import type { SolidFramework } from './types';
 
 type ValueOf<T> = T[keyof T];
@@ -20,6 +21,8 @@ type Accessors<Type> = {
 interface SignalCache<T> {
   getters: Accessors<ValueOf<T>>;
   setters: { [key: string]: Setter<any> };
+  active: Accessor<boolean>;
+  setActive: Setter<boolean>;
 }
 
 const componentSignalCache: Record<string, SignalCache<Args> | undefined> = {};
@@ -28,8 +31,10 @@ const ucFirst = (s: string) => `${(s[0] || '').toUpperCase()}${s.substring(1)}`;
 
 const setterName = (s: string) => `set${ucFirst(s)}`;
 
-const createArgSignalCache = (args: Args) =>
-  Object.entries(args).reduce(
+const createArgSignalCache = (args: Args) => {
+  const [active, setActive] = createSignal(true);
+
+  return Object.entries(args).reduce(
     (signals, [arg, value]) => {
       const [getter, setter] = createSignal(value);
       // eslint-disable-next-line no-param-reassign
@@ -38,8 +43,9 @@ const createArgSignalCache = (args: Args) =>
       signals.setters[setterName(arg)] = setter;
       return signals;
     },
-    { getters: {}, setters: {} } as SignalCache<Args>
+    { getters: {}, setters: {}, active, setActive } as SignalCache<Args>
   );
+};
 
 const getSignalCache = (id: string, args: Args) => {
   const cacheExists = !!componentSignalCache[id];
@@ -76,7 +82,14 @@ export const render: ArgsStoryFn<SolidFramework> = (args, context) => {
   // Arg changes are passed to signal setters to trigger reactivity.
   const cached = getSignalCache(context.id, args);
 
-  return <Component {...cached.getters} />;
+  // Component rendering is wrapped in <Show></Show> to allow any onCleanup() effects
+  // in it to run. This is necessary because there is really no other way to manually
+  // dispose of a reactive scope in SolidJS... as far as I know :)
+  return (
+    <Show when={cached.active}>
+      <Component {...cached.getters} />
+    </Show>
+  );
 };
 
 export function renderToDOM(
@@ -99,6 +112,11 @@ export function renderToDOM(
 
   return () => {
     // When the story ends, remove its signal cache.
+    const cached = componentSignalCache[storyContext.id];
+    if (cached) {
+      // This signals the wrapper to unmount the Story component
+      cached.setActive(false);
+    }
     componentSignalCache[storyContext.id] = undefined;
   };
 }
