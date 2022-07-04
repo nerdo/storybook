@@ -1,9 +1,7 @@
 import type { RenderContext } from '@storybook/store';
-import type { Accessor, Setter } from 'solid-js';
+import { Accessor, ErrorBoundary, Setter, Show, batch, createSignal } from 'solid-js';
 import type { Args, ArgsStoryFn } from '@storybook/csf';
-import { Show, batch, createSignal } from 'solid-js';
 import { render as renderSolidJS } from 'solid-js/web';
-import _h from 'solid-js/h';
 import type { SolidFramework } from './types';
 
 type ValueOf<T> = T[keyof T];
@@ -34,11 +32,14 @@ const setterName = (s: string) => `set${ucFirst(s)}`;
 const createArgSignalCache = (args: Args) => {
   const [active, setActive] = createSignal(true);
 
+  // const getters = Object.create({})
+  // Object.defineProperties()
   return Object.entries(args).reduce(
     (signals, [arg, value]) => {
       const [getter, setter] = createSignal(value);
       // eslint-disable-next-line no-param-reassign
       signals.getters[arg] = getter;
+      // signals.getters[arg] = () => getter;
       // eslint-disable-next-line no-param-reassign
       signals.setters[setterName(arg)] = setter;
       return signals;
@@ -65,10 +66,6 @@ const getSignalCache = (id: string, args: Args) => {
   return cached;
 };
 
-// nerdo: for some reason, the tsconfig's jsxImportSource doesn't get respected
-// and without importing and telling babel to use solid-js/h as the jsx function,
-// it tries to use React.createElement which breaks all the things... 2022-07-03
-/** @jsx _h */
 export const render: ArgsStoryFn<SolidFramework> = (args, context) => {
   const { id, component: Component } = context;
   if (!Component) {
@@ -85,9 +82,25 @@ export const render: ArgsStoryFn<SolidFramework> = (args, context) => {
   // Component rendering is wrapped in <Show></Show> to allow any onCleanup() effects
   // in it to run. This is necessary because there is really no other way to manually
   // dispose of a reactive scope in SolidJS... as far as I know :)
+  // const [,getters] = splitProps(cached.getters, [])
+  const { getters } = cached;
+  console.log('getters', getters);
   return (
     <Show when={cached.active}>
-      <Component {...cached.getters} />
+      <ErrorBoundary
+        fallback={(err, reset) => (
+          <div>
+            <div>Uncaught Error: {err || 'Something went wrong!'}</div>
+            <div>
+              <button type="button" onClick={() => reset()}>
+                Reset
+              </button>
+            </div>
+          </div>
+        )}
+      >
+        <Component {...getters} />
+      </ErrorBoundary>
     </Show>
   );
 };

@@ -51,10 +51,11 @@ export interface CounterPropsBase {
 type CounterProps = CounterPropsBase & UCounterProps & Partial<Setters<UCounterProps>>;
 
 export const Counter: Component<CounterProps> = (p) => {
+  console.log('p.value', typeof p.value, p.value);
   return (
     <Switch>
       <Match when={p.controlled}>
-        <CCounter value={() => p.value} setValue={p.setValue} />
+        <CCounter value={p.value as unknown as Accessor<number>} setValue={p.setValue} />
       </Match>
       <Match when={!p.controlled}>
         <UCounter value={p.value} />
