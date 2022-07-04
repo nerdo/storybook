@@ -7,8 +7,16 @@ export default {
 
 type Story = ComponentStory<typeof Counter>;
 
-export const Standard: Story = {
+export const UnControlled: Story = {
   args: {
+    controlled: false,
+    value: 0,
+  },
+};
+
+export const Controlled: Story = {
+  args: {
+    controlled: true,
     value: 0,
   },
 };
